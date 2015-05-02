@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/jquery.transit.min.js"></script>
+        <script type="text/javascript" src="js/js.cookie.js"></script>
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <link rel="stylesheet" href="css/font-awesome.min.css">
+        <script>
+            $(document).ready(function(){
+				Cookies.get('name');
+                $("#add").click(function(){
+              	var theBest = false;//
+				var itemType = $('#itemType').val();
+				var name = $('#name').val();
+				var quantity = $('#quantity').val();
+				var price = $('#price').val();
+				if(theBest){
+					$("#itemList ul").append('<li class="list-group-item list-group-item-success" id="theBest">'+name+'<span class="badge">the best price</span></li>');
+				}
+				else
+				{
+					$("#itemList ul").append('<li class="list-group-item items"><div class="first-row"><h5>'+name+'</h5><h5 class="pull-right">2nd</h5></div>' +
+					'<div class="second-row"><h5><small>'+quantity+'U / $'+price+'</small></h5><h5 class="pull-right">'+price/quantity+' U/$</h5></div></li>');
+					
+				}
+				$('html, body').animate({
+    			scrollTop: $("#itemList").offset().top}, 1000);
+				cookieName = 'pType_'+itemType;
+				cookieValue = name + ' ' + price + ' ' + quantity;
+				Cookies.set(cookieName, cookieValue, { expires: 7, path: '/' });
+				
+                });
+            });
+			//$('body').click(function() {
+			//	$('body').transition({ scale: ($('body').css('scale')+0.5) });
+			//});
+        </script>
+		<style type="text/css">
+			li.items {
+				float:left;
+				width:100%
+			}
+			li.items div {
+				clear:both;
+				width:100%;
+			}
+			li.items h5 {
+				display:inline-block;
+				float:left;
+				margin-bottom:5px;
+				margin-top:5px;
+			}
+			li.items h5 small {
+				display:inline-block;
+				float:right;
+				margin-left:5px;
+				
+			}
+			li.items .first-row h5.pull-right {
+				display:inline-block;
+				float:right;
+				color:green;
+			}
+			.form-control {
+				height:inherit;
+			}
+			
+	</style>
+    </head>
+    
+    <body>
+        <div class="section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="page-header">
+                            <h3>Welcome to price Comparator
+                                <font color="#777777">
+                                    <br>
+                                    <span style="font-size: 11px;">save your money</span>
+                                </font>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="view">
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a>Home</a>
+                                </li>
+                                <li>
+                                    <a href="history.html">History</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <form>
+                            <div class="form-group">
+                                <label class="control-label" for="itemType">Product type:</label>
+                                <select class="form-control" id="itemType">
+                                    <option class="">milk</option>
+                                    <option class="">Egg</option>
+                                    <option class="">Rice</option>
+                                    <option class="">Pasta</option>
+                                    <option class="">Fish</option>
+                                    <option class="">Cheese</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" for="itemQuantity">Product brand:</label>
+                                <input type="text" class="form-control"
+                                id="name">
+                            </div>
+                            <div class="form-group" style="display:inline-block; width:67%;padding-right:5px;">
+                                <label class="control-label" for="itemQuantity">Quantity:</label>
+                                <input class="form-control" id="quantity" placeholder="Enter the quantity"
+                                type="text">
+                            </div><div class="form-group has-feedback" style="display:inline-block; width:33%;">
+                                <label class="control-label" for="item price">Price:</label>
+                                <input class="form-control" id="price"
+                                type="text">
+                            </div>
+                        </form>
+                        <button id="add" class="btn btn-block btn-primary">Add
+                             <i class="fa fa-fw fa-lg fa-plus-circle text-inverse"></i> 
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6" id="itemList">
+                        <ul class="list-group" id="itemList">
+                            <br>
+                            <lable class="lable">Prices list:</lable>
+                            <li class="list-group-item list-group-item-success"
+                            id="theBest">The best item
+                                <span class="badge">the best price</span>
+                            </li>
+                            <li class="list-group-item">Other items</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+</html>

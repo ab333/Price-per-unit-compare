@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/js.cookie.js"></script>
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <link rel="stylesheet" href="css/font-awesome.min.css">
+		<script>
+            $(document).ready(function(){
+				s = Cookies.get("pType_Pasta");
+				quantity = s.substr(s.lastIndexOf(' ')+1);
+				priceString = s.substr(0,s.lastIndexOf(' '));
+				//price = price.substr(0,price.lastIndexOf(' ')+1);
+				price = priceString.substr(priceString.lastIndexOf(' ')+1);
+				name = priceString.substr(0,priceString.lastIndexOf(' '));
+				$("#itemList ul").append('<li class="list-group-item items"><div class="first-row"><h5>'+name+'</h5><h5 class="pull-right">2nd</h5></div>' +
+					'<div class="second-row"><h5><small>'+quantity+' U / $'+price+'</small></h5><h5 class="pull-right">'+Math.round(quantity/price * 100) / 100+' U/$</h5></div></li>');
+
+            });
+			//$('body').click(function() {
+			//	$('body').transition({ scale: ($('body').css('scale')+0.5) });
+			//});
+        </script>
+		<style type="text/css">
+			li.items {
+				float:left;
+				width:100%
+			}
+			li.items div {
+				clear:both;
+				width:100%;
+			}
+			li.items h5 {
+				display:inline-block;
+				float:left;
+				margin-bottom:5px;
+				margin-top:5px;
+			}
+			li.items h5 small {
+				display:inline-block;
+				float:right;
+				margin-left:5px;
+				
+			}
+			li.items .first-row h5.pull-right {
+				display:inline-block;
+				float:right;
+				color:green;
+			}
+			.form-control {
+				height:inherit;
+			}
+			
+	</style>
+    </head>
+    
+    <body>
+        <div class="section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="page-header">
+                            <h3>Welcome to price Comparator
+                                <font color="#777777">
+                                    <br>
+                                    <span style="font-size: 11px;">save your money</span>
+                                </font>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="view">
+                            <ul class="nav nav-tabs">
+                                <li>
+                                    <a href="test.html">Home</a>
+                                </li>
+                                <li class="active">
+                                    <a>History</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+				<div class="row">
+                    <div class="col-md-6" id="itemList">
+                        <ul class="list-group" id="itemList">
+                            <lable class="lable">Prices list:</lable>
+                            <li class="list-group-item">Other items</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+</html>
