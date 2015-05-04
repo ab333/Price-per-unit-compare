@@ -46,7 +46,7 @@
     					
     				}
     				$('html, body').animate({
-        			scrollTop: $("#itemList").offset().top}, 1000);
+        			scrollTop: $("#downTag").offset().top}, 1000);
     				cookieName = 'pType_'+itemType;
     				cookieValue = name + ' ' + price + ' ' + quantity;
     				Cookies.set(cookieName, cookieValue, { expires: 7, path: '/' });
@@ -91,13 +91,13 @@
     						bottom: 2em;
     						right: 0px;
     						color: #000000;
-    						background-color: rgba(235, 235, 235, 0.80);
+    						background-color: rgba(0, 0, 0, 0.2);
     						padding: 8px;
     						display: none;
                         }
 
           				.back-to-top:hover {    
-              				background-color: rgba(135, 135, 135, 0.50);
+              				background-color: rgba(0, 0, 0, 0.1);
           				}
         </style>
     </head>
@@ -164,7 +164,7 @@
                             </div>
                         </form>
                         <button id="add" class="btn btn-block btn-primary">Add
-                            <i class="fa fa-fw fa-lg fa-plus-circle text-inverse"></i>
+                            <img src="img/plus.png" class="img-circle">
                         </button>
                     </div>
                 </div>
@@ -175,12 +175,13 @@
                             <lable class="lable">Prices list:</lable>
                             <li class="list-group-item list-group-item-success"
                             id="theBest">The best item
-                                <span class="badge">the best price</span>
+                                <span class="badge">The best price</span>
                             </li>
                             <li class="list-group-item">Other items</li>
                         </ul>
                     </div>
                 </div>
+                <dev id="downTag"></dev>
                 <a href="#" class="back-to-top"><img src="img/up.png" class="img-responsive"></a>
             </div>
         </div>
