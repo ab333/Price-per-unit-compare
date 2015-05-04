@@ -11,34 +11,51 @@
         <link rel="stylesheet" href="css/bootstrap.css">
         <link rel="stylesheet" href="css/font-awesome.min.css">
         <script>
-            $(document).ready(function(){
-				Cookies.get('name');
-                $("#add").click(function(){
-              	var theBest = false;//
-				var itemType = $('#itemType').val();
-				var name = $('#name').val();
-				var quantity = $('#quantity').val();
-				var price = $('#price').val();
-				if(theBest){
-					$("#itemList ul").append('<li class="list-group-item list-group-item-success" id="theBest">'+name+'<span class="badge">the best price</span></li>');
-				}
-				else
-				{
-					$("#itemList ul").append('<li class="list-group-item items"><div class="first-row"><h5>'+name+'</h5><h5 class="pull-right">2nd</h5></div>' +
-					'<div class="second-row"><h5><small>'+quantity+'U / $'+price+'</small></h5><h5 class="pull-right">'+price/quantity+' U/$</h5></div></li>');
-					
-				}
-				$('html, body').animate({
-    			scrollTop: $("#itemList").offset().top}, 1000);
-				cookieName = 'pType_'+itemType;
-				cookieValue = name + ' ' + price + ' ' + quantity;
-				Cookies.set(cookieName, cookieValue, { expires: 7, path: '/' });
-				
+            $(document).ready(function() {
+        			var offset = 220;
+			        var duration = 500;
+		        $(window).scroll(function() {
+        		    if ($(this).scrollTop() > offset) {
+                	$('.back-to-top').fadeIn(duration);
+		            } else {
+        	        $('.back-to-top').fadeOut(duration);
+           		}
+	        });
+        
+   			     $('.back-to-top').click(function(event) {
+            		event.preventDefault();
+            	$('html, body').animate({scrollTop: $("#headerTap").offset().top}, duration);
+            		return false;
+        		})
+    		});
+                $(document).ready(function(){
+    				Cookies.get('name');
+                    $("#add").click(function(){
+                  	var theBest = false;//
+    				var itemType = $('#itemType').val();
+    				var name = $('#name').val();
+    				var quantity = $('#quantity').val();
+    				var price = $('#price').val();
+    				if(theBest){
+    					$("#itemList ul").append('<li class="list-group-item list-group-item-success" id="theBest">'+name+'<span class="badge">the best price</span></li>');
+    				}
+    				else
+    				{
+    					$("#itemList ul").append('<li class="list-group-item items"><div class="first-row"><h5>'+name+'</h5><h5 class="pull-right">2nd</h5></div>' +
+    					'<div class="second-row"><h5><small>'+quantity+'U / $'+price+'</small></h5><h5 class="pull-right">'+price/quantity+' U/$</h5></div></li>');
+    					
+    				}
+    				$('html, body').animate({
+        			scrollTop: $("#itemList").offset().top}, 1000);
+    				cookieName = 'pType_'+itemType;
+    				cookieValue = name + ' ' + price + ' ' + quantity;
+    				Cookies.set(cookieName, cookieValue, { expires: 7, path: '/' });
+    				
+                    });
                 });
-            });
-			//$('body').click(function() {
-			//	$('body').transition({ scale: ($('body').css('scale')+0.5) });
-			//});
+    			//$('body').click(function() {
+    			//	$('body').transition({ scale: ($('body').css('scale')+0.5) });
+    			//});
         </script>
         <style type="text/css">
             li.items {
@@ -69,6 +86,19 @@
             			.form-control {
             				height:inherit;
             			}
+          				.back-to-top {
+    						position: fixed;
+    						bottom: 2em;
+    						right: 0px;
+    						color: #000000;
+    						background-color: rgba(235, 235, 235, 0.80);
+    						padding: 8px;
+    						display: none;
+                        }
+
+          				.back-to-top:hover {    
+              				background-color: rgba(135, 135, 135, 0.50);
+          				}
         </style>
     </head>
     
@@ -93,7 +123,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="view">
+                        <div class="view" id="headerTap">
                             <ul class="nav nav-tabs">
                                 <li class="active">
                                     <a>Home</a>
@@ -151,6 +181,7 @@
                         </ul>
                     </div>
                 </div>
+                <a href="#" class="back-to-top"><img src="img/up.png" class="img-responsive"></a>
             </div>
         </div>
     </body>
