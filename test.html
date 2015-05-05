@@ -42,22 +42,27 @@
     				var quantity = $('#quantity').val();
     				var price = $('#price').val();
 
-                    var item = {itemType:$('#itemType').val(), name:$('#name').val(), quantity:$('#quantity').val(), price: $('#price').val(), priceDBquantity:$('#quantity').val()/$('#price').val()};
+                    var item = {itemType:$('#itemType').val(), name:$('#name').val(), quantity:$('#quantity').val(), price: $('#price').val(), priceDBquantity:$('#price').val()/$('#quantity').val()};
                     arrayOfItems[arrayOfItems.length] = item;
                     arrayOfItems.sort(function(a,b) {
                         //Rearrange the array, so the best item will be at index 0
                         return a.priceDBquantity - b.priceDBquantity;
                     });
-    				if(theBestPrice > arrayOfItems[0].price || firstTime){
-                        theBestPrice = arrayOfItems[0].price;
+
+    				if(theBestPrice > arrayOfItems[0].priceDBquantity || firstTime){
+                        theBestPrice = arrayOfItems[0].priceDBquantity;
                         if(firstTime == false)
                             {
                                 $('#itemList ul li').first().remove();
                             }
-    					$("#itemList ul").append('<li class="list-group-item list-group-item-success" id="theBest">'+arrayOfItems[0].name +'<span class="badge">the best price</span></li>');
+                        
+                        $('#itemList ul li').eq(0).before('<li class="list-group-item list-group-item-success" id="theBest">'+arrayOfItems[0].name +'<span class="badge">the best price</span></li>');
+                        
+                        if(arrayOfItems.length>1){
 
-                        $("#itemList ul").append('<li class="list-group-item items"><div class="first-row"><h5>'+arrayOfItems[1].name+'</h5><h5 class="pull-right">2nd</h5></div>' +
+                        $('#itemList ul li').eq(1).after('<li class="list-group-item items"><div class="first-row"><h5>'+arrayOfItems[1].name+'</h5><h5 class="pull-right">2nd</h5></div>' +
                         '<div class="second-row"><h5><small>'+arrayOfItems[1].quantity+'U / $'+arrayOfItems[1].price+'</small></h5><h5 class="pull-right">'+arrayOfItems[1].price/quantity+' U/$</h5></div></li>');
+                    }
                         //insert the best price 
                         firstTime = false;//
     				}
@@ -192,9 +197,10 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6" id="itemList">
+                        <br>
+                        <lable class="lable">Prices list:</lable>
                         <ul class="list-group" id="itemList">
-                            <br>
-                            <lable class="lable">Prices list:</lable>
+                          <li class="hidden-lg hidden-md hidden-sm hidden-xs" ></li>  
                         </ul>
                     </div>
                 </div>
