@@ -4,13 +4,50 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <script type="text/javascript" src="js/jquery-1.6.1.min.js"></script>
+        <script type="text/javascript" src="js/jquery-2.1.4.js"></script>
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
         <script type="text/javascript" src="js/jquery.transit.min.js"></script>
         <script type="text/javascript" src="js/js.cookie.js"></script>
         <link rel="stylesheet" href="css/bootstrap.css">
         <link rel="stylesheet" href="css/font-awesome.min.css">
         <script>
+
+            
+
+            $(document).ready(function(){
+
+            $( "#quantity" ).keypress(function(){
+            var regex = new RegExp("^[0-9+*()]");
+            var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+            if (!regex.test(key)) {
+                event.preventDefault();
+                return false;
+                }
+            });
+            $( "#price" ).keypress(function(){
+            var regex = new RegExp("^[0-9.+*()]");
+            var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+            if (!regex.test(key)) {
+                event.preventDefault();
+                return false;
+                }
+            });
+            
+                $(".form-control").keypress(function(event) {
+                    if(event.keyCode == 13) { 
+                        inputFields = $("input.form-control");
+                        currentBoxNumber = inputFields.index(this);
+                        if (inputFields[currentBoxNumber + 1] != null) {
+                        nextBox = inputFields[currentBoxNumber + 1]
+                        nextBox.focus();
+                        nextBox.select();
+                        event.preventDefault();
+                        return false 
+                        }
+                    }
+                });
+            })
+
             $(document).ready(function() {
         			var offset = 220;
 			        var duration = 500;
@@ -29,49 +66,75 @@
         		})
     		});
 
+            function isEmpty()
+            {
+                    var name = $('#name').val();
+                    var quantity = $('#quantity').val();
+                    var price = $('#price').val();
+                    var isEmpty = false;
+                    if(name == '')
+                    {
+                        $( "#pBLable" ).append('<span style="font-size: 8px; color:red;" id="inpurError">Please enter a product brand</span>');
+                        isEmpty = true;
+                    }
+                    if(quantity == '')
+                    {
+                        $("#qLable").append('<span style="font-size: 8px; color:red;" id="inpurError1">Please enter a product brand</span>');
+                        isEmpty = true;
+                    }
+                    if( price == '')
+                    {
+                        $( "#pLable" ).append('<span style="font-size: 8px; color:red;" id="inpurError2">Please enter a product brand</span>');
+                        isEmpty = true;
+                    }
+                    return isEmpty;
+            }
+
 
                 $(document).ready(function(){
-                    alert("run");
+
                     var arrayOfItems = [];
                     var theBestPrice = 0;
                     var firstTime = true;//
     				Cookies.get('name');
                     $("#add").click(function(){
-    				var itemType = $('#itemType').val();
+
+                        $( "#inpurError" ).remove();
+                        $( "#inpurError1" ).remove();
+                        $( "#inpurError2" ).remove();
+
+
+                    if (isEmpty()) {return;}
+    				
+                    var itemType = $('#itemType').val();
     				var name = $('#name').val();
-    				var quantity = $('#quantity').val();
+    				var quantity = eval($('#quantity').val());
     				var price = $('#price').val();
 
-                    var item = {itemType:$('#itemType').val(), name:$('#name').val(), quantity:$('#quantity').val(), price: $('#price').val(), priceDBquantity:$('#price').val()/$('#quantity').val()};
+                    var item = {itemType:$('#itemType').val(), name:$('#name').val(), quantity:eval($('#quantity').val()), price: $('#price').val(), priceDBquantity:$('#price').val()/eval($('#quantity').val())};
                     arrayOfItems[arrayOfItems.length] = item;
                     arrayOfItems.sort(function(a,b) {
                         //Rearrange the array, so the best item will be at index 0
                         return a.priceDBquantity - b.priceDBquantity;
                     });
 
-    				if(theBestPrice > arrayOfItems[0].priceDBquantity || firstTime){
-                        theBestPrice = arrayOfItems[0].priceDBquantity;
-                        if(firstTime == false)
-                            {
-                                $('#itemList ul li').first().remove();
-                            }
+                            $('#itemList ul li').remove();
+                            for (var i = 0 ; i<arrayOfItems.length; i++) {
+                                if(i==0)
+                                {
+                                    $("#itemList ul").append('<li class="list-group-item list-group-item-success items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5><h5 class="pull-right"><span class="badge">The best price</span></h5></div>' + '<div class="second-row"><h5><small>'+ arrayOfItems[i].quantity +'U / $'+arrayOfItems[i].price+'</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' U/$</h5></div></li>');
                         
-                        $('#itemList ul li').eq(0).before('<li class="list-group-item list-group-item-success" id="theBest">'+arrayOfItems[0].name +'<span class="badge">the best price</span></li>');
-                        
-                        if(arrayOfItems.length>1){
+         
+                                }
+                                else
+                                {
+                                    $("#itemList ul").append('<li class="list-group-item items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5><h5 class="pull-right">2nd</h5></div>' + '<div class="second-row"><h5><small>'+ arrayOfItems[i].quantity +'U / $'+arrayOfItems[i].price+'</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' U/$</h5></div></li>');
+             
 
-                        $('#itemList ul li').eq(1).after('<li class="list-group-item items"><div class="first-row"><h5>'+arrayOfItems[1].name+'</h5><h5 class="pull-right">2nd</h5></div>' +
-                        '<div class="second-row"><h5><small>'+arrayOfItems[1].quantity+'U / $'+arrayOfItems[1].price+'</small></h5><h5 class="pull-right">'+arrayOfItems[1].price/quantity+' U/$</h5></div></li>');
-                    }
-                        //insert the best price 
-                        firstTime = false;//
-    				}
-    				else
-    				{
-    					$("#itemList ul").append('<li class="list-group-item items"><div class="first-row"><h5>'+name+'</h5><h5 class="pull-right">2nd</h5></div>' +
-    					'<div class="second-row"><h5><small>'+quantity+'U / $'+price+'</small></h5><h5 class="pull-right">'+price/quantity+' U/$</h5></div></li>');
-    					
-    				}
+                                }
+                            };
+
+
     				$('html, body').animate({
         			scrollTop: $("#downTag").offset().top}, 1000);
     				cookieName = 'pType_'+itemType;
@@ -85,7 +148,7 @@
     			//});
         </script>
         <style type="text/css">
-            li.items {
+                li.items {
             				float:left;
             				width:100%
             			}
@@ -108,7 +171,6 @@
             			li.items .first-row h5.pull-right {
             				display:inline-block;
             				float:right;
-            				color:green;
             			}
             			.form-control {
             				height:inherit;
@@ -177,17 +239,18 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label class="control-label" for="itemQuantity">Product brand:</label>
+                                <label class="control-label" for="itemQuantity" id="pBLable">Product brand:</label>
                                 <input type="text" class="form-control" id="name">
+                                
                             </div>
                             <div class="form-group" style="display:inline-block; width:67%;padding-right:5px;">
-                                <label class="control-label" for="itemQuantity">Quantity:</label>
+                                <label class="control-label" for="itemQuantity" id="qLable">Quantity:</label>
                                 <input class="form-control" id="quantity" placeholder="Enter the quantity"
-                                type="number">
+                                type="text">
                             </div>
                             <div class="form-group has-feedback" style="display:inline-block; width:33%;">
-                                <label class="control-label" for="item price">Price:</label>
-                                <input class="form-control" id="price" type="number">
+                                <label class="control-label" for="exampleInputEmail1" id="pLable">Price:</label>
+                                <input class="form-control" id="price" type="text">
                             </div>
                         </form>
                         <button id="add" class="btn btn-block btn-primary">Add
@@ -200,7 +263,6 @@
                         <br>
                         <lable class="lable">Prices list:</lable>
                         <ul class="list-group" id="itemList">
-                          <li class="hidden-lg hidden-md hidden-sm hidden-xs" ></li>  
                         </ul>
                     </div>
                 </div>
