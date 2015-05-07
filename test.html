@@ -4,51 +4,32 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <script type="text/javascript" src="js/jquery-2.1.4.js"></script>
+        <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
         <script type="text/javascript" src="js/jquery.transit.min.js"></script>
         <script type="text/javascript" src="js/js.cookie.js"></script>
         <link rel="stylesheet" href="css/bootstrap.css">
         <link rel="stylesheet" href="css/font-awesome.min.css">
         <script>
-
-            
-
-            $(document).ready(function(){
-
-            $( "#quantity" ).keypress(function(){
-            var regex = new RegExp("^[0-9.+*()]");
-            var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
-            if (!regex.test(key)) {
-                event.preventDefault();
-                return false;
-                }
-            });
-            $( "#price" ).keypress(function(){
-            var regex = new RegExp("^[0-9.+*()]");
-            var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
-            if (!regex.test(key)) {
-                event.preventDefault();
-                return false;
-                }
-            });
-            
-                $(".form-control").keypress(function(event) {
-                    if(event.keyCode == 13) { 
-                        inputFields = $("input.form-control");
-                        currentBoxNumber = inputFields.index(this);
-                        if (inputFields[currentBoxNumber + 1] != null) {
-                        nextBox = inputFields[currentBoxNumber + 1]
-                        nextBox.focus();
-                        nextBox.select();
-                        event.preventDefault();
-                        return false 
-                        }
-                    }
-                });
-            })
-
+		items = ["Milk","Egg","Rice","Pasta","Fish","Cheese"];
+		cookieCounter = 0;
             $(document).ready(function() {
+				for(i=0;i<10;i++) { // To list old items in the list (from Cookies)
+					itemCookieName = "homeCookie"+i;
+					s = Cookies.get(itemCookieName);
+					if(s) {
+						cookieCounter++;
+						quantity = s.substr(s.lastIndexOf(' ')+1);
+						priceString = s.substr(0,s.lastIndexOf(' '));
+						//price = price.substr(0,price.lastIndexOf(' ')+1);
+						price = priceString.substr(priceString.lastIndexOf(' ')+1);
+						name = priceString.substr(0,priceString.lastIndexOf(' '));
+						$("#itemList ul").append('<li class="list-group-item items"><div class="first-row"><h5>'+name+'</h5><h5 class="pull-right">2nd</h5></div>' +
+    					'<div class="second-row"><h5><small>'+quantity+'U / $'+price+'</small></h5><h5 class="pull-right">'+quantity/price+' U/$</h5></div></li>');
+
+					}
+					
+				} // End listing old items
         			var offset = 220;
 			        var duration = 500;
 		        $(window).scroll(function() {
@@ -65,90 +46,40 @@
             		return false;
         		})
     		});
-
-            function isEmpty()
-            {
-                    var name = $('#name').val();
-                    var quantity = $('#quantity').val();
-                    var price = $('#price').val();
-                    var isEmpty = false;
-                    if(name == '')
-                    {
-                        $( "#pBLable" ).append('<span style="font-size: 8px; color:red;" id="inpurError">Please enter a product brand</span>');
-                        isEmpty = true;
-                    }
-                    if(quantity == '')
-                    {
-                        $("#qLable").append('<span style="font-size: 8px; color:red;" id="inpurError1">Please enter a product brand</span>');
-                        isEmpty = true;
-                    }
-                    if( price == '')
-                    {
-                        $( "#pLable" ).append('<span style="font-size: 8px; color:red;" id="inpurError2">Please enter a product brand</span>');
-                        isEmpty = true;
-                    }
-                    return isEmpty;
-            }
-
-
                 $(document).ready(function(){
-
-                    var arrayOfItems = [];
-                    var theBestPrice = 0;
-                    var firstTime = true;//
     				Cookies.get('name');
                     $("#add").click(function(){
-
-                        $( "#inpurError" ).remove();
-                        $( "#inpurError1" ).remove();
-                        $( "#inpurError2" ).remove();
-
-
-                    if (isEmpty()) {return;}
-    				
-                    var itemType = $('#itemType').val();
+                  	var theBest = false;//
+    				var itemType = $('#itemType').val();
     				var name = $('#name').val();
-    				var quantity = eval($('#quantity').val());
+    				var quantity = $('#quantity').val();
     				var price = $('#price').val();
-
-                    var item = {itemType:$('#itemType').val(), name:$('#name').val(), quantity:eval($('#quantity').val()), price: $('#price').val(), priceDBquantity:$('#price').val()/eval($('#quantity').val())};
-                    arrayOfItems[arrayOfItems.length] = item;
-                    arrayOfItems.sort(function(a,b) {
-                        //Rearrange the array, so the best item will be at index 0
-                        return a.priceDBquantity - b.priceDBquantity;
-                    });
-
-                            $('#itemList ul li').remove();
-                            for (var i = 0 ; i<arrayOfItems.length; i++) {
-                                if(i==0)
-                                {
-                                    $("#itemList ul").append('<li class="list-group-item list-group-item-success items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5><h5 class="pull-right"><span class="badge">The best price</span></h5></div>' + '<div class="second-row"><h5><small>'+ arrayOfItems[i].quantity +'U / $'+arrayOfItems[i].price+'</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' U/$</h5></div></li>');
-                        
-         
-                                }
-                                else
-                                {
-                                    $("#itemList ul").append('<li class="list-group-item items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5><h5 class="pull-right">2nd</h5></div>' + '<div class="second-row"><h5><small>'+ arrayOfItems[i].quantity +'U / $'+arrayOfItems[i].price+'</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' U/$</h5></div></li>');
-             
-
-                                }
-                            };
-
-
+    				if(theBest){
+    					$("#itemList ul").append('<li class="list-group-item list-group-item-success" id="theBest">'+name+'<span class="badge">the best price</span></li>');
+    				}
+    				else
+    				{
+    					$("#itemList ul").append('<li class="list-group-item items"><div class="first-row"><h5>'+name+'</h5><h5 class="pull-right">2nd</h5></div>' +
+    					'<div class="second-row"><h5><small>'+quantity+'U / $'+price+'</small></h5><h5 class="pull-right">'+quantity/price+' U/$</h5></div></li>');
+    					
+    				}
     				$('html, body').animate({
         			scrollTop: $("#downTag").offset().top}, 1000);
     				cookieName = 'pType_'+itemType;
     				cookieValue = name + ' ' + price + ' ' + quantity;
-    				Cookies.set(cookieName, cookieValue, { expires: 7, path: '/' });
-    				
+    				Cookies.set(cookieName, cookieValue, { expires: 700000, path: '/' });
+					cookieName = 'homeCookie'+cookieCounter;
+					cookieCounter++;
+    				Cookies.set(cookieName, cookieValue, { expires: 700000, path: '/' });
                     });
+					
                 });
     			//$('body').click(function() {
     			//	$('body').transition({ scale: ($('body').css('scale')+0.5) });
     			//});
         </script>
         <style type="text/css">
-                li.items {
+            li.items {
             				float:left;
             				width:100%
             			}
@@ -171,6 +102,7 @@
             			li.items .first-row h5.pull-right {
             				display:inline-block;
             				float:right;
+            				color:green;
             			}
             			.form-control {
             				height:inherit;
@@ -230,7 +162,7 @@
                             <div class="form-group">
                                 <label class="control-label" for="itemType">Product type:</label>
                                 <select class="form-control" id="itemType">
-                                    <option class="">milk</option>
+                                    <option class="">Milk</option>
                                     <option class="">Egg</option>
                                     <option class="">Rice</option>
                                     <option class="">Pasta</option>
@@ -239,17 +171,16 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label class="control-label" for="itemQuantity" id="pBLable">Product brand:</label>
+                                <label class="control-label" for="itemQuantity">Product brand:</label>
                                 <input type="text" class="form-control" id="name">
-                                
                             </div>
                             <div class="form-group" style="display:inline-block; width:67%;padding-right:5px;">
-                                <label class="control-label" for="itemQuantity" id="qLable">Quantity:</label>
+                                <label class="control-label" for="itemQuantity">Quantity:</label>
                                 <input class="form-control" id="quantity" placeholder="Enter the quantity"
                                 type="text">
-                            </div>
-                            <div class="form-group has-feedback" style="display:inline-block; width:33%;">
-                                <label class="control-label" for="exampleInputEmail1" id="pLable">Price:</label>
+                            </div><div 
+                            class="form-group has-feedback" style="display:inline-block; width:33%;">
+                                <label class="control-label" for="item price">Price:</label>
                                 <input class="form-control" id="price" type="text">
                             </div>
                         </form>
@@ -260,9 +191,14 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6" id="itemList">
-                        <br>
-                        <lable class="lable">Prices list:</lable>
                         <ul class="list-group" id="itemList">
+                            <br>
+                            <lable class="lable">Prices list:</lable>
+                            <li class="list-group-item list-group-item-success"
+                            id="theBest">The best item
+                                <span class="badge">The best price</span>
+                            </li>
+                            <li class="list-group-item">Other items</li>
                         </ul>
                     </div>
                 </div>
