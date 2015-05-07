@@ -4,28 +4,195 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script type="text/javascript" src="js/jquery-2.1.4.js"></script>
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/jquery.transit.min.js"></script>
         <script type="text/javascript" src="js/js.cookie.js"></script>
         <link rel="stylesheet" href="css/bootstrap.css">
         <link rel="stylesheet" href="css/font-awesome.min.css">
         <script>
+			items = ["Milk","Egg","Rice","Pasta","Fish","Cheese"];
+			cookieCounter = 0;
+			for(i=0;i<10;i++) 
+			{ // To list old items in the list (from Cookies)
+				itemCookieName = "homeCookie"+i;
+				s = Cookies.get(itemCookieName);
+				if(s)
+					cookieCounter++
+			}
             $(document).ready(function(){
-				s = Cookies.get("pType_Pasta");
-				quantity = s.substr(s.lastIndexOf(' ')+1);
-				priceString = s.substr(0,s.lastIndexOf(' '));
-				//price = price.substr(0,price.lastIndexOf(' ')+1);
-				price = priceString.substr(priceString.lastIndexOf(' ')+1);
-				name = priceString.substr(0,priceString.lastIndexOf(' '));
-				$("#itemList ul").append('<li class="list-group-item items"><a class="pull-left"><img height="64" width="64" src="img/pasta.png" ></a><div class="media-body"><h4 class="media-heading">Pasta:</h4><div class="first-row"><h5>'+name+'</h5><h5 class="pull-right">2nd</h5></div>' + '<div class="second-row"><h5><small>'+quantity+' U / $'+price+'</small></h5><h5 class="pull-right">'+Math.round(quantity/price * 100) / 100+' U/$</h5></div></div></li>');
-
+            $( "#quantity" ).keypress(function(){
+            var regex = new RegExp("^[0-9.+*()]");
+            var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+            if (!regex.test(key)) {
+                event.preventDefault();
+                return false;
+                }
             });
-			//$('body').click(function() {
-			//	$('body').transition({ scale: ($('body').css('scale')+0.5) });
-			//});
+            $( "#price" ).keypress(function(){
+            var regex = new RegExp("^[0-9.+*()]");
+            var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+            if (!regex.test(key)) {
+                event.preventDefault();
+                return false;
+                }
+            });
+            
+                $(".form-control").keypress(function(event) {
+                    if(event.keyCode == 13) { 
+                        inputFields = $("input.form-control");
+                        currentBoxNumber = inputFields.index(this);
+                        if (inputFields[currentBoxNumber + 1] != null) {
+                        nextBox = inputFields[currentBoxNumber + 1]
+                        nextBox.focus();
+                        nextBox.select();
+                        event.preventDefault();
+                        return false 
+                        }
+                    }
+                });
+            })
+
+            $(document).ready(function() {
+        			var offset = 220;
+			        var duration = 500;
+		        $(window).scroll(function() {
+        		    if ($(this).scrollTop() > offset) {
+                	$('.back-to-top').fadeIn(duration);
+		            } else {
+        	        $('.back-to-top').fadeOut(duration);
+           		}
+	        });
+        
+   			     $('.back-to-top').click(function(event) {
+            		event.preventDefault();
+            	$('html, body').animate({scrollTop: $("#headerTap").offset().top}, duration);
+            		return false;
+        		})
+    		});
+
+            function isEmpty()
+            {
+                    var name = $('#name').val();
+                    var quantity = $('#quantity').val();
+                    var price = $('#price').val();
+                    var isEmpty = false;
+                    if(name == '')
+                    {
+                        $( "#pBLable" ).append('<span style="font-size: 8px; color:red;" id="inpurError">Please enter a product brand</span>');
+                        isEmpty = true;
+                    }
+                    if(quantity == '')
+                    {
+                        $("#qLable").append('<span style="font-size: 8px; color:red;" id="inpurError1">Please enter a product brand</span>');
+                        isEmpty = true;
+                    }
+                    if( price == '')
+                    {
+                        $( "#pLable" ).append('<span style="font-size: 8px; color:red;" id="inpurError2">Please enter a product brand</span>');
+                        isEmpty = true;
+                    }
+                    return isEmpty;
+            }
+
+
+                $(document).ready(function(){
+					// Get items from cookies
+					var arrayOfItems = [];
+					for(i=0;i<10;i++) 
+					{ // To list old items in the list (from Cookies)
+						itemCookieName = "homeCookie"+i;
+						s = Cookies.get(itemCookieName);
+						if(s) 
+						{
+							quantity = s.substr(s.lastIndexOf(' ')+1);
+							priceString = s.substr(0,s.lastIndexOf(' '));
+							//price = price.substr(0,price.lastIndexOf(' ')+1);
+							price = priceString.substr(priceString.lastIndexOf(' ')+1);
+							name = priceString.substr(0,priceString.lastIndexOf(' '));
+							var item = {itemType:name, name:name, quantity:quantity, price:price, priceDBquantity:quantity/price};
+							arrayOfItems[arrayOfItems.length] = item;
+						}	
+					} 
+					arrayOfItems.sort(function(a,b) {
+						//Rearrange the array, so the best item will be at index 0
+						return	b.priceDBquantity - a.priceDBquantity ;
+					});
+
+					$('#itemList ul li').remove();
+					for (var i = 0 ; i<arrayOfItems.length; i++) {
+						if(i==0)
+						{
+							$("#itemList ul").append('<li class="list-group-item list-group-item-success items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5><h5 class="pull-right"><span class="badge">The best price</span></h5></div>' + '<div class="second-row"><h5><small>'+ arrayOfItems[i].quantity +'U / $'+arrayOfItems[i].price+'</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' U/$</h5></div></li>');
+						}
+						else
+						{
+							$("#itemList ul").append('<li class="list-group-item items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5></div>' + '<div class="second-row"><h5><small>'+ arrayOfItems[i].quantity +'U / $'+arrayOfItems[i].price+'</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' U/$</h5></div></li>');
+						}
+					};
+				
+				// End listing old items
+                    //var arrayOfItems = [];
+                    var theBestPrice = 0;
+                    var firstTime = true;//
+    				Cookies.get('name');
+                    $("#add").click(function(){
+
+                        $( "#inpurError" ).remove();
+                        $( "#inpurError1" ).remove();
+                        $( "#inpurError2" ).remove();
+
+
+                    if (isEmpty()) {return;}
+    				
+                    var itemType = $('#itemType').val();
+    				var name = $('#name').val();
+    				var quantity = eval($('#quantity').val());
+    				var price = $('#price').val();
+
+                    var item = {itemType:$('#itemType').val(), name:$('#name').val(), quantity:eval($('#quantity').val()), price: $('#price').val(), priceDBquantity:eval($('#quantity').val())/$('#price').val()};
+                    arrayOfItems[arrayOfItems.length] = item;
+                    arrayOfItems.sort(function(a,b) {
+                        //Rearrange the array, so the best item will be at index 0
+                        return	b.priceDBquantity - a.priceDBquantity ;
+                    });
+
+                            $('#itemList ul li').remove();
+                            for (var i = 0 ; i<arrayOfItems.length; i++) {
+                                if(i==0)
+                                {
+                                    $("#itemList ul").append('<li class="list-group-item list-group-item-success items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5><h5 class="pull-right"><span class="badge">The best price</span></h5></div>' + '<div class="second-row"><h5><small>'+ arrayOfItems[i].quantity +'U / $'+arrayOfItems[i].price+'</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' U/$</h5></div></li>');
+                        
+         
+                                }
+                                else
+                                {
+                                    $("#itemList ul").append('<li class="list-group-item items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5></div>' + '<div class="second-row"><h5><small>'+ arrayOfItems[i].quantity +'U / $'+arrayOfItems[i].price+'</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' U/$</h5></div></li>');
+             
+
+                                }
+                            };
+
+
+    				$('html, body').animate({
+        			scrollTop: $("#downTag").offset().top}, 1000);
+    				cookieName = 'pType_'+itemType;
+    				cookieValue = arrayOfItems[0].name + ' ' + arrayOfItems[0].price + ' ' + arrayOfItems[0].quantity;
+					Cookies.set(cookieName, cookieValue, { expires: 700000, path: '/' });
+					cookieValue = name + ' ' + price + ' ' + quantity;
+					cookieName = 'homeCookie'+cookieCounter;
+					cookieCounter++;
+    				Cookies.set(cookieName, cookieValue, { expires: 700000, path: '/' });
+    				
+                    });
+
+                });
+    			//$('body').click(function() {
+    			//	$('body').transition({ scale: ($('body').css('scale')+0.5) });
+    			//});
         </script>
         <style type="text/css">
-            li.items {
+                li.items {
             				float:left;
             				width:100%
             			}
@@ -48,14 +215,23 @@
             			li.items .first-row h5.pull-right {
             				display:inline-block;
             				float:right;
-            				color:green;
             			}
             			.form-control {
             				height:inherit;
             			}
-                        .media-body {
-                            width: 10000px;
+          				.back-to-top {
+    						position: fixed;
+    						bottom: 2em;
+    						right: 0px;
+    						color: #000000;
+    						background-color: rgba(0, 0, 0, 0.2);
+    						padding: 8px;
+    						display: none;
                         }
+
+          				.back-to-top:hover {    
+              				background-color: rgba(0, 0, 0, 0.1);
+          				}
         </style>
     </head>
     
@@ -80,33 +256,63 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="view">
+                        <div class="view" id="headerTap">
                             <ul class="nav nav-tabs">
-                                <li>
-                                    <a href="test.html">Home</a>
-                                </li>
                                 <li class="active">
-                                    <a>History</a>
+                                    <a>Home</a>
+                                </li>
+                                <li>
+                                    <a href="history.html">History</a>
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </div>
-                <br>
+                <div class="row">
+                    <div class="col-md-6">
+                        <form>
+                            <div class="form-group">
+                                <label class="control-label" for="itemType">Product type:</label>
+                                <select class="form-control" id="itemType">
+                                    <option class="">Milk</option>
+                                    <option class="">Egg</option>
+                                    <option class="">Rice</option>
+                                    <option class="">Pasta</option>
+                                    <option class="">Fish</option>
+                                    <option class="">Cheese</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" for="itemQuantity" id="pBLable">Product brand:</label>
+                                <input type="text" class="form-control" id="name">
+                                
+                            </div>
+                            <div class="form-group" style="display:inline-block; width:67%;padding-right:5px;">
+                                <label class="control-label" for="itemQuantity" id="qLable">Quantity:</label>
+                                <input class="form-control" id="quantity" placeholder="Enter the quantity"
+                                type="text">
+                            </div><div class="form-group has-feedback" style="display:inline-block; width:33%;">
+                                <label class="control-label" for="exampleInputEmail1" id="pLable">Price:</label>
+                                <input class="form-control" id="price" type="text">
+                            </div>
+                        </form>
+                        <button id="add" class="btn btn-block btn-primary">Add
+                            <img src="img/plus.png" class="img-circle">
+                        </button>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-6" id="itemList">
-                        <ul class="list-group">
-                            <li class="list-group-item">
-                                <a class="pull-left"><img height="64" width="64" src="img/milk.png" class="center-block"></a>
-                                <div class="media-body">
-                                    <h4 class="media-heading">Milk:</h4>
-                                    <p>Product Data</p>
-                                </div>
-                            </li>
+                        <br>
+                        <lable class="lable">Prices list:</lable>
+                        <ul class="list-group" id="itemList">
                         </ul>
                     </div>
                 </div>
+                <dev id="downTag"></dev>
+                <a href="#" class="back-to-top"><img src="img/up.png" class="img-responsive"></a>
             </div>
+            <br>
         </div>
     </body>
 
