@@ -11,11 +11,16 @@
         <link rel="stylesheet" href="css/bootstrap.css">
         <link rel="stylesheet" href="css/font-awesome.min.css">
         <script>
-
-            
-
+			items = ["Milk","Egg","Rice","Pasta","Fish","Cheese"];
+			cookieCounter = 0;
+			for(i=0;i<10;i++) 
+			{ // To list old items in the list (from Cookies)
+				itemCookieName = "homeCookie"+i;
+				s = Cookies.get(itemCookieName);
+				if(s)
+					cookieCounter++
+			}
             $(document).ready(function(){
-
             $( "#quantity" ).keypress(function(){
             var regex = new RegExp("^[0-9.+*()]");
             var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
@@ -92,8 +97,42 @@
 
 
                 $(document).ready(function(){
+					// Get items from cookies
+					var arrayOfItems = [];
+					for(i=0;i<10;i++) 
+					{ // To list old items in the list (from Cookies)
+						itemCookieName = "homeCookie"+i;
+						s = Cookies.get(itemCookieName);
+						if(s) 
+						{
+							quantity = s.substr(s.lastIndexOf(' ')+1);
+							priceString = s.substr(0,s.lastIndexOf(' '));
+							//price = price.substr(0,price.lastIndexOf(' ')+1);
+							price = priceString.substr(priceString.lastIndexOf(' ')+1);
+							name = priceString.substr(0,priceString.lastIndexOf(' '));
+							var item = {itemType:name, name:name, quantity:quantity, price:price, priceDBquantity:price/quantity};
+							arrayOfItems[arrayOfItems.length] = item;
+						}	
+					} 
+					arrayOfItems.sort(function(a,b) {
+						//Rearrange the array, so the best item will be at index 0
+						return	a.priceDBquantity - b.priceDBquantity ;
+					});
 
-                    var arrayOfItems = [];
+					$('#itemList ul li').remove();
+					for (var i = 0 ; i<arrayOfItems.length; i++) {
+						if(i==0)
+						{
+							$("#itemList ul").append('<li class="list-group-item list-group-item-success items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5><h5 class="pull-right"><span class="badge">The best price</span></h5></div>' + '<div class="second-row"><h5><small>'+ arrayOfItems[i].quantity +'U / $'+arrayOfItems[i].price+'</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' $/U</h5></div></li>');
+						}
+						else
+						{
+							$("#itemList ul").append('<li class="list-group-item items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5></div>' + '<div class="second-row"><h5><small>'+ arrayOfItems[i].quantity +'U / $'+arrayOfItems[i].price+'</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' $/U</h5></div></li>');
+						}
+					};
+				
+				// End listing old items
+                    //var arrayOfItems = [];
                     var theBestPrice = 0;
                     var firstTime = true;//
     				Cookies.get('name');
@@ -115,20 +154,20 @@
                     arrayOfItems[arrayOfItems.length] = item;
                     arrayOfItems.sort(function(a,b) {
                         //Rearrange the array, so the best item will be at index 0
-                        return a.priceDBquantity - b.priceDBquantity;
+                        return	a.priceDBquantity - b.priceDBquantity ;
                     });
 
                             $('#itemList ul li').remove();
                             for (var i = 0 ; i<arrayOfItems.length; i++) {
                                 if(i==0)
                                 {
-                                    $("#itemList ul").append('<li class="list-group-item list-group-item-success items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5><h5 class="pull-right"><span class="badge">The best price</span></h5></div>' + '<div class="second-row"><h5><small>'+ arrayOfItems[i].quantity +'U / $'+arrayOfItems[i].price+'</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' U/$</h5></div></li>');
+                                    $("#itemList ul").append('<li class="list-group-item list-group-item-success items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5><h5 class="pull-right"><span class="badge">The best price</span></h5></div>' + '<div class="second-row"><h5><small>'+ arrayOfItems[i].quantity +'U / $'+arrayOfItems[i].price+'</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' $/U</h5></div></li>');
                         
          
                                 }
                                 else
                                 {
-                                    $("#itemList ul").append('<li class="list-group-item items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5><h5 class="pull-right">2nd</h5></div>' + '<div class="second-row"><h5><small>'+ arrayOfItems[i].quantity +'U / $'+arrayOfItems[i].price+'</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' U/$</h5></div></li>');
+                                    $("#itemList ul").append('<li class="list-group-item items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5></div>' + '<div class="second-row"><h5><small>'+ arrayOfItems[i].quantity +'U / $'+arrayOfItems[i].price+'</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' $/U</h5></div></li>');
              
 
                                 }
@@ -138,10 +177,15 @@
     				$('html, body').animate({
         			scrollTop: $("#downTag").offset().top}, 1000);
     				cookieName = 'pType_'+itemType;
-    				cookieValue = name + ' ' + price + ' ' + quantity;
-    				Cookies.set(cookieName, cookieValue, { expires: 7, path: '/' });
+    				cookieValue = arrayOfItems[0].name + ' ' + arrayOfItems[0].price + ' ' + arrayOfItems[0].quantity;
+					Cookies.set(cookieName, cookieValue, { expires: 700000, path: '/' });
+					cookieValue = name + ' ' + price + ' ' + quantity;
+					cookieName = 'homeCookie'+cookieCounter;
+					cookieCounter++;
+    				Cookies.set(cookieName, cookieValue, { expires: 700000, path: '/' });
     				
                     });
+
                 });
     			//$('body').click(function() {
     			//	$('body').transition({ scale: ($('body').css('scale')+0.5) });
@@ -230,7 +274,7 @@
                             <div class="form-group">
                                 <label class="control-label" for="itemType">Product type:</label>
                                 <select class="form-control" id="itemType">
-                                    <option class="">milk</option>
+                                    <option class="">Milk</option>
                                     <option class="">Egg</option>
                                     <option class="">Rice</option>
                                     <option class="">Pasta</option>
@@ -247,8 +291,7 @@
                                 <label class="control-label" for="itemQuantity" id="qLable">Quantity:</label>
                                 <input class="form-control" id="quantity" placeholder="Enter the quantity"
                                 type="text">
-                            </div>
-                            <div class="form-group has-feedback" style="display:inline-block; width:33%;">
+                            </div><div class="form-group has-feedback" style="display:inline-block; width:33%;">
                                 <label class="control-label" for="exampleInputEmail1" id="pLable">Price:</label>
                                 <input class="form-control" id="price" type="text">
                             </div>
