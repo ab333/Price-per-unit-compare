@@ -10,15 +10,24 @@
         <link rel="stylesheet" href="css/bootstrap.css">
         <link rel="stylesheet" href="css/font-awesome.min.css">
         <script>
+		items = ["Milk","Egg","Rice","Pasta","Fish","Cheese"];
             $(document).ready(function(){
-				s = Cookies.get("pType_Pasta");
-				quantity = s.substr(s.lastIndexOf(' ')+1);
-				priceString = s.substr(0,s.lastIndexOf(' '));
-				//price = price.substr(0,price.lastIndexOf(' ')+1);
-				price = priceString.substr(priceString.lastIndexOf(' ')+1);
-				name = priceString.substr(0,priceString.lastIndexOf(' '));
-				$("#itemList ul").append('<li class="list-group-item items"><a class="pull-left"><img height="64" width="64" src="img/pasta.png" ></a><div class="media-body"><h4 class="media-heading">Pasta:</h4><div class="first-row"><h5>'+name+'</h5><h5 class="pull-right">2nd</h5></div>' + '<div class="second-row"><h5><small>'+quantity+' U / $'+price+'</small></h5><h5 class="pull-right">'+Math.round(quantity/price * 100) / 100+' U/$</h5></div></div></li>');
+				for(i=0;i<items.length;i++) {
+					itemCookieName = "pType_"+items[i];
+					s = Cookies.get(itemCookieName);
+					productName = items[i];
+					lowerProdectName =  items[i].toLowerCase();
+					if(s) {
+						quantity = s.substr(s.lastIndexOf(' ')+1);
+						priceString = s.substr(0,s.lastIndexOf(' '));
+						//price = price.substr(0,price.lastIndexOf(' ')+1);
+						price = priceString.substr(priceString.lastIndexOf(' ')+1);
+						name = priceString.substr(0,priceString.lastIndexOf(' '));
+						$("#itemList ul").append('<li class="list-group-item items"><a class="pull-left"><img height="64" width="64" src="img/'+lowerProdectName+'.png" ></a><div class="media-body"><h4 class="media-heading">'+productName+':</h4><div class="first-row"><h5>'+name+'</h5><h5 class="pull-right">2nd</h5></div>' + '<div class="second-row"><h5><small>'+quantity+' U / $'+price+'</small></h5><h5 class="pull-right">'+Math.round(quantity/price * 100) / 100+' U/$</h5></div></div></li>');
 
+					}
+					
+				}
             });
 			//$('body').click(function() {
 			//	$('body').transition({ scale: ($('body').css('scale')+0.5) });
@@ -53,8 +62,9 @@
             			.form-control {
             				height:inherit;
             			}
-                        .media-body {
-                            width: 10000px;
+						li.list-group-item.items div.media-body.media-body {
+                            padding-left: 14px;
+							width: 9%;
                         }
         </style>
     </head>
