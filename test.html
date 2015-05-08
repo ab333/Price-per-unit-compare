@@ -150,7 +150,8 @@
     				var quantity = eval($('#quantity').val());
     				var price = $('#price').val();
 
-                    var item = {itemType:$('#itemType').val(), name:$('#name').val(), quantity:eval($('#quantity').val()), price: $('#price').val(), priceDBquantity:eval($('#quantity').val())/$('#price').val()};
+                    
+-                    var item = {itemType:$('#itemType').val(), name:$('#name').val(), quantity:eval($('#quantity').val()), price: $('#price').val(), priceDBquantity:$('#price').val()/eval($('#quantity').val())};
                     arrayOfItems[arrayOfItems.length] = item;
                     arrayOfItems.sort(function(a,b) {
 						//Rearrange the array, so the best item will be at index 0
