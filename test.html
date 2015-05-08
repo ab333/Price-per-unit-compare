@@ -116,18 +116,18 @@
 					} 
 					arrayOfItems.sort(function(a,b) {
 						//Rearrange the array, so the best item will be at index 0
-						return	a.priceDBquantity - b.priceDBquantity ;
+						return	 a.priceDBquantity - b.priceDBquantity;
 					});
 
 					$('#itemList ul li').remove();
 					for (var i = 0 ; i<arrayOfItems.length; i++) {
 						if(i==0)
 						{
-							$("#itemList ul").append('<li class="list-group-item list-group-item-success items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5><h5 class="pull-right"><span class="badge">The best price</span></h5></div>' + '<div class="second-row"><h5><small>'+ arrayOfItems[i].quantity +'U / $'+arrayOfItems[i].price+'</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' $/U</h5></div></li>');
+							$("#itemList ul").append('<li class="list-group-item list-group-item-success items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5><h5 class="pull-right"><span class="badge">The best price</span></h5></div>' + '<div class="second-row"><h5><small>$'+arrayOfItems[i].price+' / '+ arrayOfItems[i].quantity +'U</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' $/U</h5></div></li>');
 						}
 						else
 						{
-							$("#itemList ul").append('<li class="list-group-item items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5></div>' + '<div class="second-row"><h5><small>'+ arrayOfItems[i].quantity +'U / $'+arrayOfItems[i].price+'</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' $/U</h5></div></li>');
+							$("#itemList ul").append('<li class="list-group-item items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5></div>' + '<div class="second-row"><h5><small>$'+arrayOfItems[i].price+' / '+ arrayOfItems[i].quantity +'U</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' $/U</h5></div></li>');
 						}
 					};
 				
@@ -150,28 +150,24 @@
     				var quantity = eval($('#quantity').val());
     				var price = $('#price').val();
 
-                    var item = {itemType:$('#itemType').val(), name:$('#name').val(), quantity:eval($('#quantity').val()), price: $('#price').val(), priceDBquantity:$('#price').val()/eval($('#quantity').val())};
+                    var item = {itemType:$('#itemType').val(), name:$('#name').val(), quantity:eval($('#quantity').val()), price: $('#price').val(), priceDBquantity:eval($('#quantity').val())/$('#price').val()};
                     arrayOfItems[arrayOfItems.length] = item;
                     arrayOfItems.sort(function(a,b) {
-                        //Rearrange the array, so the best item will be at index 0
-                        return	a.priceDBquantity - b.priceDBquantity ;
-                    });
+						//Rearrange the array, so the best item will be at index 0
+						return	 a.priceDBquantity - b.priceDBquantity;
+					});
 
-                            $('#itemList ul li').remove();
-                            for (var i = 0 ; i<arrayOfItems.length; i++) {
-                                if(i==0)
-                                {
-                                    $("#itemList ul").append('<li class="list-group-item list-group-item-success items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5><h5 class="pull-right"><span class="badge">The best price</span></h5></div>' + '<div class="second-row"><h5><small>'+ arrayOfItems[i].quantity +'U / $'+arrayOfItems[i].price+'</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' $/U</h5></div></li>');
-                        
-         
-                                }
-                                else
-                                {
-                                    $("#itemList ul").append('<li class="list-group-item items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5></div>' + '<div class="second-row"><h5><small>'+ arrayOfItems[i].quantity +'U / $'+arrayOfItems[i].price+'</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' $/U</h5></div></li>');
-             
-
-                                }
-                            };
+					$('#itemList ul li').remove();
+					for (var i = 0 ; i<arrayOfItems.length; i++) {
+						if(i==0)
+						{
+							$("#itemList ul").append('<li class="list-group-item list-group-item-success items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5><h5 class="pull-right"><span class="badge">The best price</span></h5></div>' + '<div class="second-row"><h5><small>$'+arrayOfItems[i].price+' / '+ arrayOfItems[i].quantity +'U</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' $/U</h5></div></li>');
+						}
+						else
+						{
+							$("#itemList ul").append('<li class="list-group-item items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5></div>' + '<div class="second-row"><h5><small>$'+arrayOfItems[i].price+' / '+ arrayOfItems[i].quantity +'U</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' $/U</h5></div></li>');
+						}
+					};
 
 
     				$('html, body').animate({
@@ -185,7 +181,43 @@
     				Cookies.set(cookieName, cookieValue, { expires: 700000, path: '/' });
     				
                     });
-
+					//Reset + Undo
+					var resetItems = [];
+					var itemsHtml;
+					var inputFieldsValue = [];
+					$("#reset").click(function(){
+						if($("#reset").html() == 'Clear')
+						{
+							resetItems = [];
+							$("#reset").html('Undo');
+							itemsHtml = $('#itemList ul').html();
+							$('#itemList ul li').remove();
+							for(i=0;i<10;i++)
+							{
+								cName = 'homeCookie'+i;
+								resetItems[i] = Cookies.get(cName);
+								Cookies.remove(cName, { path: '/' });
+							}
+							$("form :input").each(function(index){
+								inputFieldsValue[index] = $(this).val();
+							});
+							$('input').val(''); // TODO store this also
+						}
+						else if($("#reset").html() == 'Undo')
+						{
+							$("#reset").html('Clear');
+							$('#itemList ul').append(itemsHtml);
+							$("form :input").each(function(index){
+								$(this).val(inputFieldsValue[index]);
+							});							
+							for(i=0;i<resetItems.length;i++)
+							{
+								cName = 'homeCookie'+i;
+								if(resetItems[i])
+									Cookies.set(cName, resetItems[i], { expires: 700000, path: '/' });
+							}
+						}
+					});
                 });
     			//$('body').click(function() {
     			//	$('body').transition({ scale: ($('body').css('scale')+0.5) });
@@ -232,6 +264,9 @@
           				.back-to-top:hover {    
               				background-color: rgba(0, 0, 0, 0.1);
           				}
+						button#reset {
+							background-color: #eee;
+						}
         </style>
     </head>
     
@@ -287,7 +322,7 @@
                                 <input type="text" class="form-control" id="name">
                                 
                             </div>
-                            <div class="form-group" style="display:inline-block; width:67%;padding-right:5px;">
+                            <div class="form-group" style="display:inline-block; width:67%;padding-right:1%;;">
                                 <label class="control-label" for="itemQuantity" id="qLable">Quantity:</label>
                                 <input class="form-control" id="quantity" placeholder="Enter the quantity"
                                 type="text">
@@ -296,9 +331,9 @@
                                 <input class="form-control" id="price" type="text">
                             </div>
                         </form>
-                        <button id="add" class="btn btn-block btn-primary">Add
+                        <button id="add" class="btn btn-primary" style="display:inline-block; width:66%;margin-right:1%;">Add
                             <img src="img/plus.png" class="img-circle">
-                        </button>
+                        </button><button id="reset" class="btn btn-default " style="display:inline-block; width:33%">Clear</button>
                     </div>
                 </div>
                 <div class="row">
