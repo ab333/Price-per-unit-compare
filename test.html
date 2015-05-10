@@ -49,6 +49,10 @@
                         event.preventDefault();
                         return false 
                         }
+                        else
+                        {
+                            $('#add').trigger('click');
+                        }
                     }
                 });
             })
@@ -135,7 +139,7 @@
                     //var arrayOfItems = [];
                     var theBestPrice = 0;
                     var firstTime = true;//
-    				Cookies.get('name');
+                    Cookies.get('name');
                     $("#add").click(function(){
 
                         $( "#inpurError" ).remove();
@@ -144,31 +148,46 @@
 
 
                     if (isEmpty()) {return;}
-    				
-                    var itemType = $('#itemType').val();
-    				var name = $('#name').val();
-    				var quantity = eval($('#quantity').val());
-    				var price = $('#price').val();
-
                     
-                    var item = {itemType:$('#itemType').val(), name:$('#name').val(), quantity:eval($('#quantity').val()), price: $('#price').val(), priceDBquantity:$('#price').val()/eval($('#quantity').val())};
+                    var itemType = $('#itemType').val();
+                    var name = $('#name').val();
+                    var quantity = eval($('#quantity').val());
+                    var price = $('#price').val();
+
+                    var item = {itemType:$('#itemType').val(), name:$('#name').val(), quantity:eval($('#quantity').val()), price: $('#price').val(), priceDBquantity:$('#price').val()/eval($('#quantity').val()), isNew:true};
                     arrayOfItems[arrayOfItems.length] = item;
                     arrayOfItems.sort(function(a,b) {
-						//Rearrange the array, so the best item will be at index 0
-						return	 a.priceDBquantity - b.priceDBquantity;
-					});
+                        //Rearrange the array, so the best item will be at index 0
+                        return a.priceDBquantity - b.priceDBquantity;
+                    });
 
-					$('#itemList ul li').remove();
-					for (var i = 0 ; i<arrayOfItems.length; i++) {
-						if(i==0)
-						{
-							$("#itemList ul").append('<li class="list-group-item list-group-item-success items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5><h5 class="pull-right"><span class="badge">The best price</span></h5></div>' + '<div class="second-row"><h5><small>$'+arrayOfItems[i].price+' / '+ arrayOfItems[i].quantity +'U</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' $/U</h5></div></li>');
-						}
-						else
-						{
-							$("#itemList ul").append('<li class="list-group-item items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5></div>' + '<div class="second-row"><h5><small>$'+arrayOfItems[i].price+' / '+ arrayOfItems[i].quantity +'U</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' $/U</h5></div></li>');
-						}
-					};
+                            $('#itemList ul li').remove();
+                            for (var i = 0 ; i<arrayOfItems.length; i++) {
+                                if(i==0)
+                                {
+                                    $("#itemList ul").append('<li class="list-group-item list-group-item-success items" id="theBest"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5><h5 class="pull-right"><span class="badge">The best price</span></h5></div>' + '<div class="second-row"><h5><small>'+ arrayOfItems[i].quantity +'U / $'+arrayOfItems[i].price+'</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' U/$</h5></div></li>');
+                                    $('html, body').animate({
+                                     scrollTop: $("#theBest").offset().top}, 1000);
+
+
+                                    arrayOfItems[i].isNew = false;
+                        
+         
+                                }
+
+                                else if (arrayOfItems[i].isNew == true)
+                                {
+                                    
+                                    $("#itemList ul").append('<li class="list-group-item items" id="newItem"><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5>' + '<div class="second-row"><h5><small>'+ arrayOfItems[i].quantity +'U / $'+arrayOfItems[i].price+'</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' U/$</h5></div></li>');
+                                   
+                                    arrayOfItems[i].isNew = false;
+                                }
+                                else
+                                {
+
+                                    $("#itemList ul").append('<li class="list-group-item items" ><div class="first-row"><h5>'+arrayOfItems[i].name +'</h5>' + '<div class="second-row"><h5><small>'+ arrayOfItems[i].quantity +'U / $'+arrayOfItems[i].price+'</small></h5><h5 class="pull-right">'+arrayOfItems[i].priceDBquantity.toFixed(2)+' U/$</h5></div></li>');
+                                }
+                            };
 
 
     				$('html, body').animate({
@@ -229,6 +248,9 @@
             				float:left;
             				width:100%
             			}
+                        li#newItem{
+                            background-color: rgba(0, 0, 0, 0.2);
+                        }
             			li.items div {
             				clear:both;
             				width:100%;
@@ -310,12 +332,18 @@
                             <div class="form-group">
                                 <label class="control-label" for="itemType">Product type:</label>
                                 <select class="form-control" id="itemType">
-                                    <option class="">Milk</option>
+                                    <option class="">Apple</option>
+                                    <option class="">Bananas</option>
+                                    <option class="">Bread</option>
+                                    <option class="">Chicken</option>
+                                    <option class="">Coffee</option>
                                     <option class="">Egg</option>
-                                    <option class="">Rice</option>
-                                    <option class="">Pasta</option>
                                     <option class="">Fish</option>
-                                    <option class="">Cheese</option>
+                                    <option class="">Meat</option>
+                                    <option class="">Milk</option>
+                                    <option class="">Orange</option>
+                                    <option class="">Pasta</option>
+                                    <option class="">Rice</option>
                                 </select>
                             </div>
                             <div class="form-group">
