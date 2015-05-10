@@ -28,6 +28,13 @@
                     }
                     
                 }
+				$("#reset").on('click', function(){
+						$('#itemList ul li').remove();
+						for(i=0;i<items.length;i++) {
+						itemCookieName = "pType_"+items[i];
+							Cookies.remove(itemCookieName, { path: '/' });
+						}
+					});
             });
             //$('body').click(function() {
             //  $('body').transition({ scale: ($('body').css('scale')+0.5) });
@@ -107,8 +114,9 @@
                     <div class="col-md-6" id="itemList">
                         <ul class="list-group">
                         </ul>
+						<button id="reset" class="btn btn-danger " style="width:100%; margin-top:5px;">Clear History!</button>
                     </div>
-					<button id="reset" class="btn btn-default " style="display:inline-block; width:33%">Clear</button>
+					
                 </div>
             </div>
         </div>
